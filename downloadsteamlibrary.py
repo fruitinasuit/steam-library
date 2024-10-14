@@ -13,6 +13,9 @@ import getsteaminfo as steam
 
     Currently, this script only works for the owner of the Steam API key.
     You can obtain a new API key at https://steamcommunity.com/dev/apikey.
+
+    Example usage:
+    python downloadsteamlibrary.py
 """
 
 
