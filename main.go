@@ -7,15 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-
-	"gopkg.in/yaml.v3"
 )
-
-// Credentials struct for YAML loading
-type Credentials struct {
-	APIKey  string `yaml:"api_key"`
-	SteamID string `yaml:"steam_id"`
-}
 
 // Steam API response structures
 type PlayerSummaryResponse struct {
@@ -147,30 +139,29 @@ func formatValue(val interface{}) string {
 }
 
 func main() {
-	// Load credentials
-	file, err := os.Open("credentials.yaml")
-	if err != nil {
-		fmt.Printf("Error opening credentials file: %v\n", err)
+	// Load credentials from environment variables
+	apiKey := os.Getenv("STEAM_API_KEY")
+	steamID := os.Getenv("STEAM_ID")
+
+	if apiKey == "" {
+		fmt.Println("Error: STEAM_API_KEY environment variable is not set")
 		return
 	}
-	defer file.Close()
 
-	var credentials Credentials
-	decoder := yaml.NewDecoder(file)
-	if err := decoder.Decode(&credentials); err != nil {
-		fmt.Printf("Error decoding credentials: %v\n", err)
+	if steamID == "" {
+		fmt.Println("Error: STEAM_ID environment variable is not set")
 		return
 	}
 
 	// Get personaname
-	personaname, err := getSteamPersonaname(credentials.SteamID, credentials.APIKey)
+	personaname, err := getSteamPersonaname(steamID, apiKey)
 	if err != nil {
 		fmt.Printf("Error getting personaname: %v\n", err)
 		return
 	}
 
 	// Get steam library
-	games, err := getSteamLibrary(credentials.SteamID, credentials.APIKey)
+	games, err := getSteamLibrary(steamID, apiKey)
 	if err != nil {
 		fmt.Printf("Error getting steam library: %v\n", err)
 		return
